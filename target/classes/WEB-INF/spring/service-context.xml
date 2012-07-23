@@ -10,9 +10,15 @@
 	<jpa:repositories base-package="org.roguepanda.mod.repository"
 		entity-manager-factory-ref="emf"
 		transaction-manager-ref="transactionManager"/>
-		
-	<context:component-scan base-package="org.roguepanda.mod.service"/>
 	
 	<context:spring-configured/>
+	
+	<context:component-scan base-package="org.roguepanda.mod.search"/>
+	
+	<context:component-scan base-package="org.roguepanda.mod.file"/>
+	
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+	
+	<bean id="accountService" class="org.roguepanda.mod.auth.AccountService"/>
 	
 </beans>

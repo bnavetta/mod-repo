@@ -1,0 +1,41 @@
+@CHARSET "UTF-8";
+
+#_top, #_bottom, #_left, #_right {
+	background: #BEC6C6;
+	position: fixed;
+}
+
+#_left, #_right {
+	top: 0;
+	bottom: 0;
+	width: 15px;
+}
+
+#_left { left: 0; }
+
+#_right { right: 0; }
+
+#_top, #_bottom {
+	left: 0;
+	right: 0;
+	height: 15px;
+}
+
+#_top { top: 0; }
+#_bottom { bottom: 0; }
+
+#content {
+	margin: 20px;
+}
+
+@media
+
+/* Fairly small screens including iphones */
+only screen and (max-width: 500px),
+
+/* iPads */
+only screen and (min-device-width: 768px) and (max-device-width: 1024px) 
+
+{
+	#_top, #_bottom, #_left, #_right { display: none; }
+}

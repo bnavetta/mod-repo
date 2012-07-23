@@ -10,44 +10,45 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
-import org.compass.annotations.Searchable;
-import org.compass.annotations.SearchableConstant;
-import org.compass.annotations.SearchableId;
-import org.compass.annotations.SearchableProperty;
-import org.roguepanda.mod.util.CompassEntityListener;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.index.Term;
+import org.roguepanda.mod.search.IndexEntityListener;
+import org.roguepanda.mod.search.Indexable;
 
 @Entity
-@Searchable
-@EntityListeners({CompassEntityListener.class})
-@SearchableConstant(name="type", values={"author"})
-public class User
+@EntityListeners({IndexEntityListener.class})
+public class User implements Indexable
 {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
 	@Column(unique=true, nullable=false)
 	private String name;
 	
-	@Column(nullable=false)
+	@NotNull
 	private byte[] password;
 	
-	@Column(nullable=false)
+	//TODO use bean validation
+	@NotNull
 	private byte[] salt;
 	
 	@OneToMany(cascade=ALL, mappedBy="author", orphanRemoval=true, fetch=EAGER)
 	private List<Mod> mods;
 	
-	@SearchableId
 	public Long getId()
 	{
 		return this.id;
 	}
 
-	@SearchableProperty(name="name")
 	public String getName() {
 		return name;
 	}
@@ -127,5 +128,19 @@ public class User
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+
+	public Term[] getIdTerms()
+	{
+		return new Term[]{new Term("id", id.toString()), new Term("type", "user")};
+	}
+
+	public Document asDocument()
+	{
+		Document doc = new Document();
+		doc.add(new StoredField("user-id", id));
+		doc.add(new StringField("name", name, Field.Store.YES));
+		doc.add(new StringField("type", "user", Field.Store.YES));
+		return doc;
 	}
 }

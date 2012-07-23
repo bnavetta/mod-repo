@@ -7,26 +7,29 @@ import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
-import org.compass.annotations.Searchable;
-import org.compass.annotations.SearchableConstant;
-import org.compass.annotations.SearchableId;
-import org.compass.annotations.SearchableProperty;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.Term;
 import org.joda.time.DateTime;
-import org.roguepanda.mod.util.CompassEntityListener;
+import org.roguepanda.mod.file.ModDeleteListener;
+import org.roguepanda.mod.search.IndexEntityListener;
+import org.roguepanda.mod.search.Indexable;
 
 @Entity
-@Searchable
-@EntityListeners({CompassEntityListener.class})
-@SearchableConstant(name="type", values={"mod"})
-public class Mod
+@EntityListeners({IndexEntityListener.class, ModDeleteListener.class})
+public class Mod implements Indexable
 {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
 	//@Column(unique=true)
@@ -52,7 +55,6 @@ public class Mod
 	//Name of mod download file in MongoDB GridFS
 	private String fileKey;
 	
-	@SearchableId
 	public Long getId()
 	{
 		return this.id;
@@ -63,7 +65,6 @@ public class Mod
 		return new DateTime(version.getTime());
 	}
 
-	@SearchableProperty(name="name")
 	public String getName() {
 		return name;
 	}
@@ -81,7 +82,6 @@ public class Mod
 		this.author = author;
 	}
 
-	@SearchableProperty(name="description")
 	public String getDescription() {
 		return description;
 	}
@@ -162,5 +162,20 @@ public class Mod
 	public String toString()
 	{
 		return name;
+	}
+
+	public Term[] getIdTerms()
+	{
+		return new Term[]{new Term("id", id.toString()), new Term("type", "mod")};
+	}
+
+	public Document asDocument()
+	{
+		Document doc = new Document();
+		doc.add(new StoredField("mod-id", id.toString()));
+		doc.add(new TextField("name", name, Field.Store.YES));
+		doc.add(new TextField("description", description, Field.Store.NO));
+		doc.add(new StringField("type", "mod", Field.Store.YES));
+		return doc;
 	}
 }
