@@ -1,4 +1,0 @@
-[ERROR] (18 Jul 2012 07:28:58,056) - HHH000099: an assertion failure occured (this may indicate a bug in Hibernate, but is more likely due to unsafe use of the session): org.hibernate.AssertionFailure: null id in org.roguepanda.mod.domain.User entry (don't flush the Session after an exception occurs)
-
-[ERROR] (18 Jul 2012 07:28:58,079) - HHH000099: an assertion failure occured (this may indicate a bug in Hibernate, but is more likely due to unsafe use of the session): org.hibernate.AssertionFailure: null id in org.roguepanda.mod.domain.User entry (don't flush the Session after an exception occurs)
-

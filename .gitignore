@@ -1,0 +1,14 @@
+target/
+
+logs/
+
+*.class
+*.jar
+*.war
+
+.project
+.classpath
+.settings/
+.springBeans
+
+.DS_Store
