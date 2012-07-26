@@ -55,3 +55,17 @@ http://en.wikipedia.org/wiki/Hash_function
 
 
 http://drupal.org/project/filetree/
+
+http://jquerysbestfriends.com/#slide1
+https://github.com/phiggins42/bloody-jquery-plugins/blob/master/pubsub.js
+http://requirejs.org/
+https://github.com/madrobby/vapor.js
+http://stackoverflow.com/questions/579109/which-rich-client-platform-to-use
+http://documentcloud.github.com/underscore/#
+http://backbonejs.org/
+http://code.google.com/p/html5shiv/
+http://blog.springsource.org/2009/12/21/mvc-simplifications-in-spring-3-0/
+http://blog.springsource.com/2010/01/25/ajax-simplifications-in-spring-3-0/
+http://www.infoworld.com/t/cloud-computing/where-google-computing-engine-fits-in-196738
+http://www.gitorious.org/valkyrie-rcp
+

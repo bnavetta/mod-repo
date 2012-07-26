@@ -5,6 +5,7 @@ logs/
 *.class
 *.jar
 *.war
+*.zip
 
 .project
 .classpath
