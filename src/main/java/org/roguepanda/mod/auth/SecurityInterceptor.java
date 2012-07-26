@@ -25,7 +25,7 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter
 				}
 				else
 				{
-					response.sendRedirect(request.getContextPath() + "/auth/login");
+					response.sendRedirect(request.getContextPath() + "/auth/login?destination=" + request.getRequestURI());
 					return false;
 				}
 			}
@@ -44,5 +44,4 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter
 	{
 		return RequestContextHolder.getRequestAttributes().getAttribute("user", RequestAttributes.SCOPE_SESSION);
 	}
-
 }

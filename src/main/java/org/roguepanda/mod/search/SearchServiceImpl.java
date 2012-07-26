@@ -7,7 +7,9 @@ import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
+import org.apache.lucene.queryparser.flexible.standard.QueryParserUtil;
 import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -40,7 +42,12 @@ public class SearchServiceImpl implements SearchService
 		//parser.setDefaultOperator(Operator.OR);
 	}
 	
-	public List<SearchResult> search(String query)
+	public String escape(String query)
+	{
+		return QueryParserUtil.escape(query);
+	}
+	
+	public List<SearchResult> search(String query) throws QueryNodeException
 	{
 		DirectoryReader reader = null;
 		try
@@ -63,10 +70,6 @@ public class SearchServiceImpl implements SearchService
 		catch(IOException e)
 		{
 			log.error("Error executing search", e);
-		}
-		catch (QueryNodeException e)
-		{
-			log.error("Error parsing query", e);
 		}
 		finally
 		{
@@ -96,7 +99,9 @@ public class SearchServiceImpl implements SearchService
 		
 		public Long getId()
 		{
-			return doc.getField("id").numericValue().longValue();
+			IndexableField id =  doc.getField("id");
+			assert id != null;
+			return Long.valueOf(id.stringValue());
 		}
 
 		public String getName()
@@ -114,6 +119,19 @@ public class SearchServiceImpl implements SearchService
 				return Type.USER;
 			else
 				throw new IllegalStateException("'" + type + "' is neither mod nor user");
+		}
+		
+		@Override
+		public String toString()
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.append(getId());
+			sb.append(": ");
+			sb.append(getName());
+			sb.append(" (");
+			sb.append(getType());
+			sb.append(")");
+			return sb.toString();
 		}
 		
 		@Override

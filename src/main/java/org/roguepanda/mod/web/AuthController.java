@@ -1,23 +1,24 @@
 package org.roguepanda.mod.web;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import org.roguepanda.mod.auth.AccountService;
+import org.roguepanda.mod.auth.RequiresLogin;
 import org.roguepanda.mod.domain.User;
 import org.roguepanda.mod.repository.UserRepository;
-import org.roguepanda.mod.web.command.LoginCommand;
 import org.roguepanda.mod.web.command.RegisterCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/auth/")
@@ -25,11 +26,11 @@ public class AuthController
 {
 	@Autowired
 	private AccountService accountService;
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
-	@RequestMapping(value="/register", method=RequestMethod.POST)
+
+	@RequestMapping(value="register", method=RequestMethod.POST)
 	public String register(@ModelAttribute RegisterCommand register, HttpSession session, ModelMap model)
 	{
 		//TODO use bean validation for nulls and check here for password match (put result in BindingResult)
@@ -56,62 +57,74 @@ public class AuthController
 			errors.add("Passwords don't match");
 			hasErrors = true;
 		}
-		
+
 		if(hasErrors)
 		{
 			model.addAttribute("hasErrors", hasErrors);
 			model.addAttribute("errors", errors);
 			return "auth/register";
 		}
-		
+
 		User user = accountService.createUser(register.getUsername(), register.getPassword());
 		session.setAttribute("user", user);
 		return "redirect:/";
 	}
-	
+
 	@RequestMapping(value="register", method=RequestMethod.GET)
 	public String registerForm(){ return "auth/register"; }
-	
+
 	@RequestMapping(value="login", method=RequestMethod.POST)
-	public String doLogin(@Valid @ModelAttribute LoginCommand cmd, BindingResult result,  ModelMap model, HttpSession session)
+	public String doLogin(@RequestParam("username") String username, @RequestParam("password") String password, ModelMap model, HttpSession session, @RequestParam(required=false, value="destination") String destination)
 	{
-		if(result.hasErrors())
+		User user = userRepository.findByName(username);
+		if(user != null)
 		{
-			model.addAttribute("hasErrors", true);
-			model.addAttribute("errors", result.getAllErrors());
-			return "auth/login";
-		}
-		else
-		{
-			User user = userRepository.findByName(cmd.getUsername());
-			if(user != null)
+			if(accountService.authenticate(user, password))
 			{
-				if(accountService.authenticate(user, cmd.getPassword()))
+				session.setAttribute("user", user);
+				if(destination == null || destination.equals(""))
 				{
-					session.setAttribute("user", user);
 					return "redirect:/";
 				}
 				else
 				{
-					result.reject("password.incorrect", "Incorrect password");
-					model.addAttribute("errors", result);
-					model.addAttribute("hasErrors", true);
-					return "auth/login";
+					return "redirect:" + destination;
 				}
 			}
 			else
 			{
-				result.reject("user.not.found", "User not found");
-				model.addAttribute("errors", result);
 				model.addAttribute("hasErrors", true);
+				model.addAttribute("errors", Collections.singletonList("Incorrect password"));
 				return "auth/login";
 			}
 		}
+		else
+		{
+			model.addAttribute("hasErrors", true);
+			model.addAttribute("errors", Collections.singletonList("User not found"));
+			return "auth/login";
+		}
+		
 	}
-	
+
 	@RequestMapping(value="login", method=RequestMethod.GET)
 	public String loginForm()
 	{
 		return "auth/login";
+	}
+
+	@RequestMapping("logout")
+	public String logout(@RequestParam(required=false, value="destination", defaultValue="/") String destination, HttpSession session)
+	{
+		session.setAttribute("user", null);
+		return "redirect:" + destination;
+	}
+
+	@RequiresLogin
+	@RequestMapping("test")
+	@ResponseBody
+	public String testSecure()
+	{
+		return "Hello, World!";
 	}
 }

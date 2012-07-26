@@ -17,9 +17,12 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
 import org.roguepanda.mod.search.IndexEntityListener;
 import org.roguepanda.mod.search.Indexable;
 
@@ -130,15 +133,20 @@ public class User implements Indexable
 		return true;
 	}
 
-	public Term[] getIdTerms()
+	public Query getQuery()
 	{
-		return new Term[]{new Term("id", id.toString()), new Term("type", "user")};
+		BooleanQuery bq = new BooleanQuery();
+		bq.add(new TermQuery(new Term("id", id.toString())), Occur.MUST);
+		bq.add(new TermQuery(new Term("type", "user")), Occur.MUST);
+		return bq;
 	}
 
 	public Document asDocument()
 	{
 		Document doc = new Document();
-		doc.add(new StoredField("user-id", id));
+		//doc.add(new StoredField("id", id.toString()));
+		//doc.add(new LongField("id", id, Field.Store.YES));
+		doc.add(new StringField("id", id.toString(), Field.Store.YES));
 		doc.add(new StringField("name", name, Field.Store.YES));
 		doc.add(new StringField("type", "user", Field.Store.YES));
 		return doc;

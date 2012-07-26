@@ -28,6 +28,17 @@ http://mojo.codehaus.org/nbm-maven/nbm-maven-plugin/
 http://code.google.com/p/playn/
 http://code.google.com/p/playn/wiki/GettingStarted
 http://code.google.com/p/playn-samples/source/browse/showcase/#showcase%2Fcore%2Fsrc%2Fmain%2Fjava%2Fplayn%2Fshowcase%2Fresources%2Fpeas
+http://www.javacooperation.gmxhome.de/TutorialStartEng.html
+http://www.javacooperation.gmxhome.de/ScrollingEng.html
+
+http://git.eclipse.org/c/
+http://stackoverflow.com/questions/3031453/way-cross-compile-c-c-code-to-run-on-windows-linux-and-mac-os
+http://www.linuxfromscratch.org/
+http://cross-lfs.org/view/CLFS-1.2.0/x86_64/prologue/organization.html
+http://www.eclipse.org/swt/faq.php#howbuilddll
+http://www.eclipse.org/swt/git.php
+
+http://www.virtualbox.org/manual/ch08.html#vboxmanage-guestcontrol
 
 http://lucene.apache.org/core/4_0_0-ALPHA/core/index.html
 

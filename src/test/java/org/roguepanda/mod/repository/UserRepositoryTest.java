@@ -1,7 +1,10 @@
 package org.roguepanda.mod.repository;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.roguepanda.mod.auth.PasswordHashGenerator;
@@ -18,6 +21,7 @@ public class UserRepositoryTest
 	@Autowired
 	private UserRepository repo;
 	
+	@Before
 	@After
 	@Transactional
 	public void cleanDB()
@@ -38,6 +42,7 @@ public class UserRepositoryTest
 		Assert.assertNotNull(saved);
 		Assert.assertEquals(user, saved);
 		Assert.assertEquals("testCRUDUser", saved.getName());
+		assertNotNull(saved.getId());
 		
 		Assert.assertNotNull(saved.getId());
 		User found = repo.findOne(saved.getId());

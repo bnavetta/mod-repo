@@ -5,7 +5,7 @@
 
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INf/spring/*.xml</param-value>
+		<param-value>/WEB-INF/spring/*.xml</param-value>
 	</context-param>
 
 	<listener>
@@ -41,6 +41,11 @@
 	<servlet-mapping>
 		<servlet-name>jsp</servlet-name>
 		<url-pattern>/WEB-INF/decorators/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>jsp</servlet-name>
+		<url-pattern>/WEB-INF/includes/*</url-pattern>
 	</servlet-mapping>
 
 </web-app>

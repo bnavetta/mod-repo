@@ -11,7 +11,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.util.Version;
@@ -90,9 +90,9 @@ public class IndexEntityListener
 		{
 			log.trace("Updating {} in index", indexable);
 			iw = getIndexWriter();
-			Term[] terms = indexable.getIdTerms();
+			Query query = indexable.getQuery();
 			Document doc = indexable.asDocument();
-			iw.deleteDocuments(terms);
+			iw.deleteDocuments(query);
 			iw.addDocument(doc);
 		}
 		catch (CorruptIndexException e)
@@ -135,8 +135,8 @@ public class IndexEntityListener
 		{
 			log.trace("Deleting {} from index", indexable);
 			iw = getIndexWriter();
-			Term[] terms = indexable.getIdTerms();
-			iw.deleteDocuments(terms);
+			Query query = indexable.getQuery();
+			iw.deleteDocuments(query);
 		}
 		catch (CorruptIndexException e)
 		{

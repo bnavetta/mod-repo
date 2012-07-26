@@ -17,6 +17,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:/WEB-INF/spring/*.xml")
 public class SearchTest
@@ -72,6 +76,9 @@ public class SearchTest
 		user.setPassword(new byte[]{2,5,3,2,46});
 		user.setSalt(new byte[]{3,6,31,5,35,54});
 		
+		user = uRepo.saveAndFlush(user);
+		assertNotNull(user.getId());
+		
 		Mod mod1 = new Mod();
 		mod1.setName("Epic Mod 1");
 		mod1.setDescription("An epic mod");
@@ -88,7 +95,24 @@ public class SearchTest
 		mod2.setInstallScript("println 'Epic Mod 2'");
 		user.addMod(mod2);
 		
-		uRepo.saveAndFlush(user);
+		user = uRepo.saveAndFlush(user);
+	}
+	
+	//@Test
+	public void testSerializeSearchResult() throws Exception
+	{
+		ObjectMapper om = new ObjectMapper();
+		om.enable(SerializationFeature.INDENT_OUTPUT);
+		om.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+		om.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		om.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+		createTestData();
+		List<SearchResult> results = searchService.search("Epic");
+		System.err.println(results);
+		System.err.println();
+		System.err.println(om.writeValueAsString(results));
+		
+		tearDown();
 	}
 
 }

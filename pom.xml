@@ -5,7 +5,7 @@
 	<groupId>org.roguepanda.mod</groupId>
 	<artifactId>mod-repo</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0-BETA</version>
 	<name>mod-repo</name>
 
 	<properties>
@@ -61,6 +61,34 @@
 			<version>1.1.0.M1</version>
 		</dependency>
 
+		<!-- File Upload -->
+		<dependency>
+    		<groupId>commons-fileupload</groupId>
+    		<artifactId>commons-fileupload</artifactId>
+    		<version>1.2.2</version>
+		</dependency>
+		
+		<!-- Jackson -->
+		<dependency>
+  			<groupId>com.fasterxml.jackson.core</groupId>
+  			<artifactId>jackson-databind</artifactId>
+  			<version>2.0.0</version>
+		</dependency>
+		
+		<!-- Commons IO -->
+		<dependency>
+    		<groupId>commons-io</groupId>
+    		<artifactId>commons-io</artifactId>
+    		<version>2.4</version>
+		</dependency>
+		
+		<!-- @PostConstruct -->
+		<dependency>
+    		<groupId>javax.annotation</groupId>
+    		<artifactId>jsr250-api</artifactId>
+    		<version>1.0</version>
+		</dependency>
+		
 		<!-- View -->
 		<dependency>
 			<groupId>opensymphony</groupId>
@@ -73,6 +101,13 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
+		
+		<dependency>
+        	<groupId>javax.servlet</groupId>
+        	<artifactId>jsp-api</artifactId>
+        	<version>2.0</version>
+        	<scope>provided</scope>
+    	</dependency>
 		
 		<!-- Servlet -->
 		<dependency>
@@ -87,6 +122,12 @@
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 			<version>2.1</version>
+		</dependency>
+		
+		<dependency>
+    		<groupId>joda-time</groupId>
+    		<artifactId>joda-time-jsptags</artifactId>
+    		<version>1.1.1</version>
 		</dependency>
 
 		<!-- AspectJ -->

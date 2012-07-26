@@ -1,6 +1,7 @@
 package org.roguepanda.mod.repository;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -36,6 +37,9 @@ public class ModRepositoryTest
 	@Transactional
 	public void createTestUser() throws Exception
 	{
+		repo.deleteAll();
+		userRepository.deleteAll();
+		
 		User u = new User();
 		u.setName("modTestUser");
 		u.setSalt(PasswordHashGenerator.generateSalt());
@@ -107,5 +111,41 @@ public class ModRepositoryTest
 		assertNotNull(found);
 		assertThat(found, hasItem(mod));
 	}
-
+	
+	
+	@Test
+	@Transactional
+	public void testFindRecent()
+	{
+		Mod mod = new Mod();
+		mod.setName("amazingMod1");
+		mod.setDescription("An amazing mod");
+		mod.setFileKey("abc");
+		mod.setHome("http://www.foo.com");
+		mod.setInstallScript("10.times{println it}");
+		user.addMod(mod);
+		
+		Mod mod2 = new Mod();
+		mod2.setName("amazingMod2");
+		mod2.setDescription("asf ");
+		mod2.setFileKey("12345");
+		mod2.setHome("http://www.google.com");
+		mod2.setInstallScript("1");
+		user.addMod(mod2);
+		
+		assertNotNull(mod.getAuthor());
+		assertEquals(user, mod.getAuthor());
+		assertNotNull(mod2.getAuthor());
+		assertEquals(user, mod2.getAuthor());
+		assertNotNull(userRepository.saveAndFlush(user));
+		
+		List<Mod> recent = repo.findRecent(5);
+		assertNotNull(recent);
+		assertFalse(recent.isEmpty());
+		assertEquals(2, recent.size());
+		assertEquals(mod2, recent.get(0));
+		assertEquals(mod, recent.get(1));
+		
+		System.err.println(recent);
+	}
 }

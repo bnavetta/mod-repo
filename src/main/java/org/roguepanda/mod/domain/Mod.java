@@ -3,6 +3,7 @@ package org.roguepanda.mod.domain;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -10,15 +11,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
 import org.joda.time.DateTime;
 import org.roguepanda.mod.file.ModDeleteListener;
 import org.roguepanda.mod.search.IndexEntityListener;
@@ -32,7 +39,7 @@ public class Mod implements Indexable
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
-	//@Column(unique=true)
+	@NotNull
 	private String name;
 	
 	@ManyToOne
@@ -42,17 +49,24 @@ public class Mod implements Indexable
 	@Version
 	private Timestamp version;
 	
+	private Date created;
+	
 	//A brief (or not) description of the mod
 	//TODO render this with Markdown/BBCode or something
 	private String description;
 	
 	//The Groovy installation script that is combined with the download file to form the .mod file
+	@NotNull
+	@Lob
 	private String installScript;
 	
 	//A URL that links to the mod's homepage/documentation/etc.
+	@NotNull
+	@org.hibernate.validator.constraints.URL
 	private String home;
 	
 	//Name of mod download file in MongoDB GridFS
+	//Can't be @NotNull because mod could be created and then have the file uploaded
 	private String fileKey;
 	
 	public Long getId()
@@ -63,6 +77,11 @@ public class Mod implements Indexable
 	public DateTime getLastModified()
 	{
 		return new DateTime(version.getTime());
+	}
+	
+	public DateTime getCreated()
+	{
+		return new DateTime(created);
 	}
 
 	public String getName() {
@@ -124,7 +143,14 @@ public class Mod implements Indexable
 	
 	public void setHome(URL home)
 	{
-		this.home = home.toString();
+		if(home != null)
+		{
+			this.home = home.toString();
+		}
+		else
+		{
+			this.home = null;
+		}
 	}
 
 	@Override
@@ -158,21 +184,35 @@ public class Mod implements Indexable
 		return true;
 	}
 	
+	@PrePersist
+	protected void initDateCreated()
+	{
+		if(created == null)
+		{
+			created = new Date();
+		}
+	}
+	
 	@Override
 	public String toString()
 	{
 		return name;
 	}
 
-	public Term[] getIdTerms()
+	public Query getQuery()
 	{
-		return new Term[]{new Term("id", id.toString()), new Term("type", "mod")};
+		BooleanQuery bq = new BooleanQuery();
+		bq.add(new TermQuery(new Term("id", id.toString())), Occur.MUST);
+		bq.add(new TermQuery(new Term("type", "mod")), Occur.MUST);
+		return bq;
 	}
 
 	public Document asDocument()
 	{
 		Document doc = new Document();
-		doc.add(new StoredField("mod-id", id.toString()));
+		//doc.add(new StoredField("id", id.toString()));
+		//doc.add(new LongField("id", id, Field.Store.YES));
+		doc.add(new StringField("id", id.toString(), Field.Store.YES));
 		doc.add(new TextField("name", name, Field.Store.YES));
 		doc.add(new TextField("description", description, Field.Store.NO));
 		doc.add(new StringField("type", "mod", Field.Store.YES));

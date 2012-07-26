@@ -1,11 +1,11 @@
 package org.roguepanda.mod.search;
 
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.Term;
+import org.apache.lucene.search.Query;
 
 public interface Indexable
 {
-	public Term[] getIdTerms();
+	public Query getQuery();
 	
 	public Document asDocument();
 }

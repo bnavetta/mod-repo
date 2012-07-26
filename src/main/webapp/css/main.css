@@ -1,5 +1,9 @@
 @CHARSET "UTF-8";
 
+ul.errorList {
+	list-style-type: none;
+}
+
 #_top, #_bottom, #_left, #_right {
 	background: #BEC6C6;
 	position: fixed;

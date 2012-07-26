@@ -20,16 +20,12 @@
 	<mvc:resources location="/js/" mapping="/js/**"/>
 	<mvc:resources location="/css/" mapping="/css/**"/>
 	
-	<bean id="handlerMapping" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
-		<property name="interceptors">
-			<list>
-				<ref local="securityInterceptor"/>
-			</list>
-		</property>
-	</bean>
+	<mvc:interceptors>
+		<bean class="org.roguepanda.mod.auth.SecurityInterceptor"/>
+	</mvc:interceptors>
 	
-	<bean id="securityInterceptor" class="org.roguepanda.mod.auth.SecurityInterceptor">
-	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    	<!--  <property name="maxUploadSize" value="100000"/> -->
 	</bean>
 	
 </beans>
