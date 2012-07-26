@@ -2,6 +2,10 @@ target/
 
 logs/
 
+mod-index/
+
+*.log
+
 *.class
 *.jar
 *.war

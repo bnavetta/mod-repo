@@ -24,6 +24,12 @@ public class LuceneConfig
 	public Directory luceneDirectory() throws IOException
 	{
 		//TODO set up a GridFS-based directory (use files as locks)
-		return FSDirectory.open(new File(System.getProperty("user.home") + File.separator + ".mod-index"));
+		return FSDirectory.open(new File("mod-index"));
+	}
+	
+	@Bean(initMethod="rebuildIndex")
+	public IndexBuilder indexBuilder()
+	{
+		return new IndexBuilder();
 	}
 }
