@@ -11,7 +11,10 @@
 		<title>Home - Minecraft Mod Repository</title>
 	</head>
 	<body>
-		<h1 class="ui-widget-header">New Mods:</h1>
+		<h1 class="ui-widget-header">Minecraft Mod Repository</h1>
+		<hr/>
+		
+		<h2 class="ui-widget-header">New Mods:</h2>
 		<ul type="none">
 		<c:forEach items="${recent }" var="m">
 			<li class="ui-state-default ui-corner-all" style="max-width:500px;">

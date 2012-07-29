@@ -99,10 +99,8 @@ public class ModController
 	@RequestMapping(value="/save", method=RequestMethod.POST)
 	public String save(EditModCommand cmd, @RequestParam(required=false, value="id") Long id, ModelMap model)
 	{
-		System.err.println("ID: " + id);
 		if(id != null && id != 0) //existing, test for 0 because Spring seems to set it to "" or 0 if it isn't actually there
 		{
-			System.err.println("EDITING MOD WITH ID " + id);
 			Mod mod = modRepository.findOne(id);
 			cmd.applyTo(mod);
 			Set<ConstraintViolation<Mod>> violations = validator.validate(mod);
@@ -120,7 +118,6 @@ public class ModController
 		}
 		else
 		{
-			System.err.println("CREATING NEW MOD");
 			Mod mod = new Mod();
 			User user = AuthUtils.getUser();
 			user.addMod(mod);
@@ -139,15 +136,4 @@ public class ModController
 			}
 		}
 	}
-	
-//	@ModelAttribute("user")
-//	public User lookupUser(@RequestParam(value="uid", required=false) Long uid)
-//	{
-//		//retrieve from session or request attributes
-//		if(AuthUtils.getUser() != null)
-//		{
-//			return AuthUtils.getUser();
-//		}
-//		return userRepository.findOne(uid);
-//	}
 }
