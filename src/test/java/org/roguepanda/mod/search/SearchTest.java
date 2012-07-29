@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:/WEB-INF/spring/*.xml")
+@ContextConfiguration("classpath:/META-INF/spring/*.xml")
 public class SearchTest
 {
 	@Autowired

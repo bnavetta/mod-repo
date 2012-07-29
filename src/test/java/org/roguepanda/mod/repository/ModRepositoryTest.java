@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:/WEB-INF/spring/*.xml")
+@ContextConfiguration("classpath:/META-INF/spring/*.xml")
 public class ModRepositoryTest
 {
 	@Autowired
